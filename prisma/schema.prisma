@@ -20,6 +20,7 @@ model User {
   bookings       Booking[]
   memories       UserMemory[]
   crdtState      Bytes?
+  createdVenues  Venue[]            @relation("VenueCreator")
   workStatus     WorkBuddyStatus?
   hostedSessions CoworkingSession[] @relation("SessionHost")
   sessionRsvps   SessionRsvp[]
@@ -43,13 +44,16 @@ model Venue {
   crowdsourced   Boolean            @default(false)
   requiresReview Boolean            @default(false)
   imageUrl       String?
-  googlePlaceId  String? // Cached Google place_id (for photo lookup)
-  photoReference String? // Cached Google Places photo_reference
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  googlePlaceId  String?       // Cached Google place_id (for photo lookup)
+  photoReference String?       // Cached Google Places photo_reference
+  menuPhotos     String[]      @default([])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   ratings        VenueRating[]
   favorites      Favorite[]
   bookings       Booking[]
+  creatorId      String?
+  creator        User?              @relation("VenueCreator", fields: [creatorId], references: [id])
   workStatuses   WorkBuddyStatus[]
   sessions       CoworkingSession[]
   seats          VenueSeat[]
@@ -71,6 +75,7 @@ model VenueRating {
   outletDensity String? // every_table, some_tables, wall_seats, none
   wifiSpeed     Int? // in Mbps
   comment       String?
+  speedtestPhoto String?
   createdAt     DateTime @default(now())
   avgDecibels   Float?
   peakDecibels  Float?

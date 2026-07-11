@@ -29,16 +29,17 @@ export async function POST(
     }
 
     const {
-  wifiQuality,
-  hasOutlets,
-  noiseLevel,
-  avgDecibels,
-  peakDecibels,
-  comment,
-  hasErgonomic,
-  outletDensity,
-  wifiSpeed,
-} = validation.data;
+      wifiQuality,
+      hasOutlets,
+      noiseLevel,
+      avgDecibels,
+      peakDecibels,
+      comment,
+      hasErgonomic,
+      outletDensity,
+      wifiSpeed,
+      speedtestPhoto,
+    } = validation.data;
     const { venue: venueData } = body; // venue data for creating new venues
 
     const targetPlaceId = venueData?.placeId || venueId;
@@ -72,16 +73,17 @@ export async function POST(
         },
       },
       update: {
-  wifiQuality,
-  hasOutlets,
-  noiseLevel,
-  avgDecibels,
-  peakDecibels,
-  hasErgonomic,
-  outletDensity,
-  wifiSpeed,
-  comment,
-},
+        wifiQuality,
+        hasOutlets,
+        noiseLevel,
+        avgDecibels: avgDecibels || null,
+        peakDecibels: peakDecibels || null,
+        hasErgonomic,
+        outletDensity,
+        wifiSpeed,
+        comment,
+        speedtestPhoto,
+      },
       create: {
         userId,
         venueId: finalVenueId,
@@ -94,6 +96,7 @@ export async function POST(
         outletDensity: outletDensity || "none",
         wifiSpeed: wifiSpeed || null,
         comment,
+        speedtestPhoto,
       },
     });
 

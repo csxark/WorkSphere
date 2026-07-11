@@ -13,11 +13,10 @@ import {
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet.heat";
 import { MapMarker, MapRoute, MapView } from "@/types/map";
 
-// Import Leaflet Heatmap Plugin safely only on client-side
-if (typeof window !== "undefined") {
+// Import Leaflet Heatmap Plugin safely only on client-side and not in Jest tests
+if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("leaflet.heat");
 }
@@ -386,51 +385,6 @@ const Map = ({
             </Polyline>
           );
         })}
-
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            position={[marker.position.lat, marker.position.lng]}
-            icon={marker.id.includes("dest") ? destinationIcon : venueIcon}
-          >
-            <Popup>
-              <div className="text-sm">
-                <div className="font-semibold text-white">{marker.name}</div>
-                {marker.category && (
-                  <div className="text-zinc-400">{marker.category}</div>
-                )}
-                {marker.address && (
-                  <div className="text-zinc-500 text-xs mt-1">{marker.address}</div>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-
-        {routes.map((route) => (
-          <Polyline
-            key={route.id}
-            positions={route.path.map(p => [p.lat, p.lng])}
-            pathOptions={{
-              color: route.isHighlighted ? "#22c55e" : "#22c55e", // Green route like the reference
-              weight: 6,
-              opacity: 0.9,
-              lineCap: "round",
-              lineJoin: "round",
-            }}
-          >
-            {route.distance && (
-              <Popup>
-                <div className="text-sm">
-                  Distance: {(route.distance / 1000).toFixed(1)} km
-                  {route.duration && (
-                    <div>Time: {Math.round(route.duration / 60)} min</div>
-                  )}
-                </div>
-              </Popup>
-            )}
-          </Polyline>
-        ))}
       </MapContainer>
     </>
   );

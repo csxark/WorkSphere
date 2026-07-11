@@ -235,12 +235,12 @@ export async function getAnalyticsSummaryAsync(): Promise<{
   return getAnalyticsSummary();
 }
 
-export function getAgentMetrics(): {
+export function getAgentMetrics(): Array<{
   agent: string;
   avgDuration: number;
   successRate: number;
   totalCalls: number;
-}[] {
+}> {
   const agents: Record<string, { totalDuration: number; successes: number; count: number }> = {};
   
   for (const event of memQueue) {
