@@ -31,7 +31,7 @@ export async function GET() {
     console.error("GET /api/favorites error:", error);
     return NextResponse.json(
       { error: "Failed to fetch favorites" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -48,12 +48,13 @@ export async function POST(req: NextRequest) {
     // Ensure Identity 💎
     await ensureUserExists(userId);
 
-    const { venueId, placeId, name, latitude, longitude, category, address } = await req.json();
+    const { venueId, placeId, name, latitude, longitude, category, address } =
+      await req.json();
 
     if (!venueId) {
       return NextResponse.json(
         { error: "venueId is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -96,7 +97,10 @@ export async function POST(req: NextRequest) {
 
     // Trigger background preference summary consolidation
     updateUserPreferencesSummary(userId).catch((err) =>
-      console.error("[FavoriteAPI POST] Background preference sync failed:", err)
+      console.error(
+        "[FavoriteAPI POST] Background preference sync failed:",
+        err,
+      ),
     );
 
     return NextResponse.json({ favorite }, { status: 201 });
@@ -107,13 +111,13 @@ export async function POST(req: NextRequest) {
     if (error.code === "P2002") {
       return NextResponse.json(
         { error: "Already in favorites" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     return NextResponse.json(
       { error: "Failed to add favorite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -137,19 +141,16 @@ export async function DELETE(req: NextRequest) {
     if (!rawVenueId) {
       return NextResponse.json(
         { error: "venueId is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Identify the venue in our DB (it might be passed as a placeId)
     const venue = await prisma.venue.findFirst({
       where: {
-        OR: [
-          { id: rawVenueId },
-          { placeId: rawVenueId }
-        ]
+        OR: [{ id: rawVenueId }, { placeId: rawVenueId }],
       },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (!venue) {
@@ -171,7 +172,10 @@ export async function DELETE(req: NextRequest) {
 
     // Trigger background preference summary consolidation
     updateUserPreferencesSummary(userId).catch((err) =>
-      console.error("[FavoriteAPI DELETE] Background preference sync failed:", err)
+      console.error(
+        "[FavoriteAPI DELETE] Background preference sync failed:",
+        err,
+      ),
     );
 
     return NextResponse.json({ success: true });
@@ -179,7 +183,7 @@ export async function DELETE(req: NextRequest) {
     console.error("DELETE /api/favorites error:", error);
     return NextResponse.json(
       { error: "Failed to remove favorite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

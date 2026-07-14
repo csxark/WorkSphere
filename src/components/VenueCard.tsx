@@ -402,16 +402,9 @@ export function VenueCard({
             </p>
           </div>
           <button
-          onClick={handleFavorite}
-          disabled={isSavingFavorite}
-            className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isFavorited
-            ?  "bg-red-100 dark:bg-red-900/20 text-red-600"
-            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
-        }`}
->
-          <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
             onClick={handleFavorite}
-            className={`p-2 rounded-lg transition-colors ${
+            disabled={isSavingFavorite}
+            className={`p-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
               isFavorited
                 ? "bg-red-100 dark:bg-red-900/20 text-red-600"
                 : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"

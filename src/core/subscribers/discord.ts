@@ -24,7 +24,10 @@ eventBus.on("booking:confirmed", async (payload) => {
 
     await sendDiscordEmbedDebounced(discordWebhookUrl, embed);
   } catch (error) {
-    console.error("[BookingConfirmedEvent] Error sending Discord notification:", error);
+    console.error(
+      "[BookingConfirmedEvent] Error sending Discord notification:",
+      error,
+    );
   }
 });
 
@@ -58,7 +61,9 @@ eventBus.on("session:rsvp", async (payload) => {
     });
 
     const userName = rsvpedUser
-      ? `${rsvpedUser.firstName || ""} ${rsvpedUser.lastName || ""}`.trim() || rsvpedUser.email || userId
+      ? `${rsvpedUser.firstName || ""} ${rsvpedUser.lastName || ""}`.trim() ||
+        rsvpedUser.email ||
+        userId
       : userId;
 
     const embed = buildVenueEventEmbed({
@@ -71,7 +76,7 @@ eventBus.on("session:rsvp", async (payload) => {
 
     // Customise description and fields for the RSVP
     embed.description = `👤 **${userName}** updated their RSVP status to **${status}** for the session at **${session.venue.name}**.`;
-    
+
     // Add session times and participant count fields
     if (embed.fields) {
       embed.fields.push({
@@ -88,6 +93,9 @@ eventBus.on("session:rsvp", async (payload) => {
 
     await sendDiscordEmbedDebounced(hostWebhookUrl, embed);
   } catch (error) {
-    console.error("[SessionRsvpEvent] Error sending Discord notification:", error);
+    console.error(
+      "[SessionRsvpEvent] Error sending Discord notification:",
+      error,
+    );
   }
 });

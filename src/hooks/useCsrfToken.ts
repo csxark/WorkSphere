@@ -37,14 +37,23 @@ function installCsrfFetchInterceptor() {
   const originalFetch = window.fetch.bind(window);
 
   window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
-    const url = typeof input === "string" || input instanceof URL ? input.toString() : input.url;
-    const isInputRequest = typeof Request !== "undefined" && input instanceof Request;
-    const method = (init?.method || (isInputRequest ? input.method : "GET")).toUpperCase();
+    const url =
+      typeof input === "string" || input instanceof URL
+        ? input.toString()
+        : input.url;
+    const isInputRequest =
+      typeof Request !== "undefined" && input instanceof Request;
+    const method = (
+      init?.method || (isInputRequest ? input.method : "GET")
+    ).toUpperCase();
     const isMutating = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
-    const isSameOriginApi = url.startsWith("/api") || url.startsWith(`${window.location.origin}/api`);
+    const isSameOriginApi =
+      url.startsWith("/api") || url.startsWith(`${window.location.origin}/api`);
 
     if (isMutating && isSameOriginApi) {
-      const headers = new Headers(init?.headers ?? (isInputRequest ? input.headers : undefined));
+      const headers = new Headers(
+        init?.headers ?? (isInputRequest ? input.headers : undefined),
+      );
       if (currentCsrfToken) {
         headers.set(CSRF_HEADER_NAME, currentCsrfToken);
       }
@@ -56,7 +65,9 @@ function installCsrfFetchInterceptor() {
           if (body && body.error && body.error.toLowerCase().includes("csrf")) {
             const freshToken = await fetchFreshToken();
             if (freshToken) {
-              const retryHeaders = new Headers(init?.headers ?? (isInputRequest ? input.headers : undefined));
+              const retryHeaders = new Headers(
+                init?.headers ?? (isInputRequest ? input.headers : undefined),
+              );
               retryHeaders.set(CSRF_HEADER_NAME, freshToken);
               return originalFetch(input, { ...init, headers: retryHeaders });
             }
@@ -74,7 +85,9 @@ function installCsrfFetchInterceptor() {
 
 async function fetchFreshToken(): Promise<string | null> {
   try {
-    const res = await fetch("/api/auth/csrf-token", { credentials: "same-origin" });
+    const res = await fetch("/api/auth/csrf-token", {
+      credentials: "same-origin",
+    });
     if (!res.ok) return null;
     const data = await res.json();
     currentCsrfToken = data.csrfToken ?? null;
